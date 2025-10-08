@@ -279,6 +279,6 @@ If this project helped you learn subnetting, please consider:
 
 ⭐ **Star this repo if you found it helpful!** ⭐
 
-[Report Bug](https://github.com/HashimThePassionate/ipv4-subnetting-guide/issues) · [Request Feature](https://github.com/HashimThePassionate/ipv4-subnetting-guide/issues) · [Documentation](https://github.com/HashimThePassionate/ipv4-subnetting-guide/readme.md)
+[Report Bug](https://github.com/HashimThePassionate/ipv4-subnetting-guide/issues) · [Request Feature](https://github.com/HashimThePassionate/ipv4-subnetting-guide/issues) 
 
 </div>
