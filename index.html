@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv4 Subnetting and VLSM Guide</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;600&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+    <script src="js/scripts.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <h1>IPv4 Subnetting and VLSM Guide</h1>
+            <p class="subtitle">A comprehensive guide to IPv4 addressing, subnetting, and Variable Length Subnet Masking</p>
+            
+            <!-- Project Goal Section -->
+            <div class="project-goal">
+                <h3>🎯 Project Goal</h3>
+                <p>This interactive educational resource is designed to help networking students, IT professionals, and aspiring network engineers master the concepts of IPv4 subnetting and Variable Length Subnet Masking (VLSM). Through practical examples, visual diagrams, and hands-on calculations, you'll learn how to:</p>
+                <ul class="goal-list">
+                    <li>✅ Understand IP addressing fundamentals and subnet masking</li>
+                    <li>✅ Calculate subnet requirements based on network size</li>
+                    <li>✅ Apply VLSM to optimize IP address allocation</li>
+                    <li>✅ Design efficient network addressing schemes</li>
+                    <li>✅ Minimize IP address waste and plan for scalability</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="main-nav" id="main-nav" aria-label="Main Navigation">
+        <div class="container">
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#step1">Step 1: IPv4 Block</a></li>
+                <li><a href="#step2">Step 2: Creating Subnets</a></li>
+                <li><a href="#step3">Step 3: Assigning Subnets</a></li>
+                <li><a href="#step4">Step 4: VLSM</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Introduction Section -->
+            <section id="introduction" class="content-section">
+                <h2>Introduction</h2>
+                
+                <div class="info-box">
+                    <h4>📘 What is Subnetting?</h4>
+                    <p><strong>Subnetting</strong> is the practice of dividing a large network into smaller, manageable sub-networks (subnets). This helps in:</p>
+                    <ul>
+                        <li>Efficient IP address utilization</li>
+                        <li>Better network performance and security</li>
+                        <li>Simplified network management</li>
+                        <li>Reduced network congestion</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>📘 What is VLSM?</h4>
+                    <p><strong>Variable Length Subnet Masking (VLSM)</strong> allows you to use different subnet masks for different subnets within the same network. This provides even more flexibility in IP address allocation and reduces waste.</p>
+                </div>
+
+                <h3>The Scenario</h3>
+                <p>This guide presents a step-by-step process for creating an IPv4 addressing scheme for an organization with four offices interconnected via a Wide Area Network (WAN). The scenario involves:</p>
+                
+                <div class="office-grid">
+                    <div class="office-card">
+                        <div class="office-icon">🏢</div>
+                        <h4>Main Office</h4>
+                        <p>Central headquarters</p>
+                        <span class="host-count">28 Hosts</span>
+                    </div>
+                    <div class="office-card">
+                        <div class="office-icon">🏪</div>
+                        <h4>Branch A</h4>
+                        <p>Regional office</p>
+                        <span class="host-count">26 Hosts</span>
+                    </div>
+                    <div class="office-card">
+                        <div class="office-icon">🏪</div>
+                        <h4>Branch B</h4>
+                        <p>Regional office</p>
+                        <span class="host-count">25 Hosts</span>
+                    </div>
+                    <div class="office-card">
+                        <div class="office-icon">🏪</div>
+                        <h4>Branch C</h4>
+                        <p>Regional office</p>
+                        <span class="host-count">15 Hosts</span>
+                    </div>
+                </div>
+                
+                <div class="network-diagram">
+                    <h4>Network Topology</h4>
+                    <img src="images/01.png" alt="Network topology showing Main Office (28 hosts) connected to Branch A (26 hosts), Branch B (25 hosts), and Branch C (15 hosts) via WAN links through routers R1, R2, R3, and R4" class="topology-image">
+                    <div class="network-summary">
+                        <div class="network-info">
+                            <h5>Network Requirements:</h5>
+                            <ul>
+                                <li>Main Office: 28 hosts</li>
+                                <li>Branch A: 26 hosts</li>
+                                <li>Branch B: 25 hosts</li>
+                                <li>Branch C: 15 hosts</li>
+                                <li>3 WAN links (2 hosts each)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <p>This tutorial will demonstrate how to use subnetting and Variable Length Subnet Masking (VLSM) to efficiently allocate IP addresses while minimizing waste and planning for future growth.</p>
+            </section>
+
+            <!-- Step 1: Determining the Appropriate IPv4 Block -->
+            <section id="step1" class="content-section">
+                <h2>Step 1: Determining the Appropriate IPv4 Block</h2>
+                
+                <div class="step-explanation">
+                    <h4>🎯 Goal of This Step</h4>
+                    <p>In this step, we will analyze our network requirements and choose the most appropriate IP address block that can accommodate all our offices while minimizing IP address waste.</p>
+                </div>
+
+                <h3>Network Requirements Analysis</h3>
+                
+                <div class="analysis-visual">
+                    <div class="requirement-flow">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h5>Count All Networks</h5>
+                                <p>Identify every network segment that needs IP addresses</p>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h5>Find Largest Network</h5>
+                                <p>Determine which network needs the most IP addresses</p>
+                            </div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h5>Choose Address Block</h5>
+                                <p>Select appropriate class to minimize waste</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p>First, we need to determine the total number of networks required:</p>
+                
+                <div class="network-count-visual">
+                    <div class="count-section">
+                        <h5>🖥️ LAN Networks (Local Area Networks)</h5>
+                        <div class="count-items">
+                            <div class="count-item">Main Office LAN</div>
+                            <div class="count-item">Branch A LAN</div>
+                            <div class="count-item">Branch B LAN</div>
+                            <div class="count-item">Branch C LAN</div>
+                        </div>
+                        <div class="count-total">Total LANs: <strong>4</strong></div>
+                    </div>
+                    
+                    <div class="count-section">
+                        <h5>🔗 WAN Networks (Point-to-Point Links)</h5>
+                        <div class="count-items">
+                            <div class="count-item">Main Office ↔ Branch A</div>
+                            <div class="count-item">Main Office ↔ Branch B</div>
+                            <div class="count-item">Main Office ↔ Branch C</div>
+                        </div>
+                        <div class="count-total">Total WANs: <strong>3</strong></div>
+                    </div>
+                    
+                    <div class="grand-total">
+                        <strong>Grand Total: 7 Networks</strong>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h5>🔍 Key Finding</h5>
+                    <p>The largest network is the <strong>Main Office LAN</strong> requiring <strong>28 hosts</strong>.</p>
+                    <p class="explanation-text">This is crucial because our subnet must be large enough to accommodate this network plus room for growth.</p>
+                </div>
+
+                <h3>Understanding IP Address Classes</h3>
+                
+                <div class="class-explanation">
+                    <div class="class-card">
+                        <div class="class-header class-a-header">Class A</div>
+                        <div class="class-body">
+                            <p><strong>Best for:</strong> Very large organizations</p>
+                            <p><strong>Network Bits:</strong> 8 bits (first octet)</p>
+                            <p><strong>Host Bits:</strong> 24 bits (last 3 octets)</p>
+                            <p><strong>Example:</strong> 10.0.0.0/8</p>
+                            <div class="binary-example">
+                                <span class="network-part">NNNNNNNN</span>.<span class="host-part">HHHHHHHH</span>.<span class="host-part">HHHHHHHH</span>.<span class="host-part">HHHHHHHH</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="class-card">
+                        <div class="class-header class-b-header">Class B</div>
+                        <div class="class-body">
+                            <p><strong>Best for:</strong> Medium to large organizations</p>
+                            <p><strong>Network Bits:</strong> 16 bits (first 2 octets)</p>
+                            <p><strong>Host Bits:</strong> 16 bits (last 2 octets)</p>
+                            <p><strong>Example:</strong> 172.16.0.0/16</p>
+                            <div class="binary-example">
+                                <span class="network-part">NNNNNNNN</span>.<span class="network-part">NNNNNNNN</span>.<span class="host-part">HHHHHHHH</span>.<span class="host-part">HHHHHHHH</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="class-card selected-class">
+                        <div class="class-header class-c-header">Class C ✓</div>
+                        <div class="class-body">
+                            <p><strong>Best for:</strong> Small to medium organizations</p>
+                            <p><strong>Network Bits:</strong> 24 bits (first 3 octets)</p>
+                            <p><strong>Host Bits:</strong> 8 bits (last octet)</p>
+                            <p><strong>Example:</strong> 192.168.0.0/24</p>
+                            <div class="binary-example">
+                                <span class="network-part">NNNNNNNN</span>.<span class="network-part">NNNNNNNN</span>.<span class="network-part">NNNNNNNN</span>.<span class="host-part">HHHHHHHH</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Subnet Mask Reference Table</h3>
+                <table class="subnet-table" aria-label="Subnet Mask Reference Table">
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Address Range</th>
+                            <th>Default Subnet Mask</th>
+                            <th>CIDR Notation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>A</td>
+                            <td>1.0.0.0 - 126.255.255.255</td>
+                            <td>255.0.0.0</td>
+                            <td>/8</td>
+                        </tr>
+                        <tr>
+                            <td>B</td>
+                            <td>128.0.0.0 - 191.255.255.255</td>
+                            <td>255.255.0.0</td>
+                            <td>/16</td>
+                        </tr>
+                        <tr>
+                            <td>C</td>
+                            <td>192.0.0.0 - 223.255.255.255</td>
+                            <td>255.255.255.0</td>
+                            <td>/24</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>IP Address Calculations</h3>
+                
+                <div class="info-box">
+                    <h4>📐 Understanding the Formulas</h4>
+                    <p><strong>Why do we subtract 2?</strong> In every subnet, two IP addresses are reserved:</p>
+                    <ul>
+                        <li><strong>Network Address:</strong> First IP (identifies the network itself)</li>
+                        <li><strong>Broadcast Address:</strong> Last IP (used to send data to all hosts)</li>
+                    </ul>
+                    <p>Therefore, if a subnet has 256 total IPs, only 254 can be assigned to actual devices.</p>
+                </div>
+
+                <div class="formula-section">
+                    <h4>Formulas:</h4>
+                    <div class="formula-grid">
+                        <div class="formula-card">
+                            <div class="formula-title">Total IP Addresses</div>
+                            <div class="formula-expression"><code>2^H</code></div>
+                            <div class="formula-detail">H = Number of Host Bits</div>
+                            <div class="formula-example">
+                                Example: 8 host bits → 2^8 = <strong>256 IPs</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="formula-card">
+                            <div class="formula-title">Usable IP Addresses</div>
+                            <div class="formula-expression"><code>2^H - 2</code></div>
+                            <div class="formula-detail">Subtract Network & Broadcast</div>
+                            <div class="formula-example">
+                                Example: 256 - 2 = <strong>254 usable IPs</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Calculation Examples:</h4>
+                    <div class="calculation-examples">
+                        <div class="calc-example">
+                            <div class="calc-class">Class A (/8)</div>
+                            <div class="calc-process">
+                                <span class="calc-step">Host Bits: 24</span>
+                                <span class="calc-step">Total: 2^24 = 16,777,216 IPs</span>
+                                <span class="calc-step">Usable: 16,777,216 - 2 = <strong>16,777,214 IPs</strong></span>
+                            </div>
+                            <div class="calc-verdict waste">❌ Too large for our needs (massive waste)</div>
+                        </div>
+                        
+                        <div class="calc-example">
+                            <div class="calc-class">Class B (/16)</div>
+                            <div class="calc-process">
+                                <span class="calc-step">Host Bits: 16</span>
+                                <span class="calc-step">Total: 2^16 = 65,536 IPs</span>
+                                <span class="calc-step">Usable: 65,536 - 2 = <strong>65,534 IPs</strong></span>
+                            </div>
+                            <div class="calc-verdict waste">❌ Still too large (significant waste)</div>
+                        </div>
+                        
+                        <div class="calc-example perfect">
+                            <div class="calc-class">Class C (/24)</div>
+                            <div class="calc-process">
+                                <span class="calc-step">Host Bits: 8</span>
+                                <span class="calc-step">Total: 2^8 = 256 IPs</span>
+                                <span class="calc-step">Usable: 256 - 2 = <strong>254 IPs</strong></span>
+                            </div>
+                            <div class="calc-verdict perfect">✅ Perfect fit for 28 hosts + future growth</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="address-comparison">
+                    <h4>Address Space Comparison</h4>
+                    <div class="address-bars">
+                        <div class="address-bar">
+                            <div class="bar-label">Class A (/8)</div>
+                            <div class="bar class-a">
+                                <div class="used-space" style="width: 0.01%"></div>
+                                <span class="bar-text">16,777,214 available / 28 needed</span>
+                            </div>
+                        </div>
+                        <div class="address-bar">
+                            <div class="bar-label">Class B (/16)</div>
+                            <div class="bar class-b">
+                                <div class="used-space" style="width: 0.1%"></div>
+                                <span class="bar-text">65,534 available / 28 needed</span>
+                            </div>
+                        </div>
+                        <div class="address-bar selected">
+                            <div class="bar-label">Class C (/24) ✓</div>
+                            <div class="bar class-c">
+                                <div class="used-space" style="width: 11%"></div>
+                                <span class="bar-text">254 available / 28 needed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="important-note">
+                    <h4>Important Note:</h4>
+                    <p>The chosen subnet size must be large enough to accommodate the largest network. Since our largest network requires 28 hosts, and a Class C network provides 254 usable IP addresses, we'll use <strong>192.168.0.0/24</strong> to avoid address wastage that would occur with Class A or B networks.</p>
+                </div>
+
+                <div class="interactive-calculator" id="subnet-calculator">
+                    <h3>Interactive Subnet Calculator</h3>
+                    <p>Try calculating subnet requirements for different host counts:</p>
+                    
+                    <div class="calculator-input">
+                        <label for="hosts-needed">Number of hosts needed:</label>
+                        <div class="input-group">
+                            <input type="number" id="hosts-needed" min="1" max="1000" placeholder="Enter number of hosts" value="28">
+                            <button id="calculate-subnet" class="calc-button">Calculate</button>
+                        </div>
+                    </div>
+                    
+                    <div id="calculator-results" class="calculator-results">
+                        <!-- Results will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Creating New Subnets -->
+            <section id="step2" class="content-section">
+                <h2>Step 2: Creating New Subnets (Subnetworks)</h2>
+
+                <h3>Binary Conversion and Subnet Creation</h3>
+                <p>We start with the Class C address block <code>192.168.0.0/24</code> and convert it to binary notation to create subnets by converting host bits to network bits.</p>
+
+                <div class="binary-section">
+                    <h4>Original Network (192.168.0.0/24):</h4>
+                    <table class="binary-table">
+                        <thead>
+                            <tr>
+                                <th>Octet</th>
+                                <th>Decimal</th>
+                                <th>Binary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1st</td>
+                                <td>192</td>
+                                <td>11000000</td>
+                            </tr>
+                            <tr>
+                                <td>2nd</td>
+                                <td>168</td>
+                                <td>10101000</td>
+                            </tr>
+                            <tr>
+                                <td>3rd</td>
+                                <td>0</td>
+                                <td>00000000</td>
+                            </tr>
+                            <tr>
+                                <td>4th</td>
+                                <td>0</td>
+                                <td>00000000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Calculating Number of Networks</h3>
+                <div class="formula-section">
+                    <h4>Formula: Number of Networks = 2^N (where N = borrowed host bits)</h4>
+                    <ul>
+                        <li><strong>1 host bit borrowed:</strong> 2^1 = 2 networks</li>
+                        <li><strong>2 host bits borrowed:</strong> 2^2 = 4 networks</li>
+                        <li><strong>3 host bits borrowed:</strong> 2^3 = 8 networks ✓</li>
+                    </ul>
+                </div>
+
+                <p>Since we need 7 networks total, we'll borrow <strong>3 host bits</strong> to create <strong>8 subnets</strong>, giving us one extra subnet for future growth.</p>
+
+                <h3>New Subnet Mask</h3>
+                <div class="subnet-mask-section">
+                    <p><strong>Original subnet mask:</strong> 255.255.255.0 (/24)</p>
+                    <p><strong>New subnet mask:</strong> 255.255.255.224 (/27)</p>
+                    
+                    <div class="binary-visualization">
+                        <h5>Binary Subnet Mask Visualization</h5>
+                        <div class="binary-row">
+                            <div class="octet-label">192.168.0.0</div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">1</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">0</span><span class="bit network">1</span><span class="bit network">0</span><span class="bit network">1</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span><span class="bit network">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="binary-row">
+                            <div class="octet-label">Subnet Mask (/27)</div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span>
+                            </div>
+                            <div class="binary-octet">
+                                <span class="bit network">1</span><span class="bit network">1</span><span class="bit network">1</span><span class="bit subnet">0</span><span class="bit subnet">0</span><span class="bit host">0</span><span class="bit host">0</span><span class="bit host">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bit-legend">
+                            <span class="legend-item"><span class="bit network">1</span> Network Bits (24)</span>
+                            <span class="legend-item"><span class="bit subnet">1</span> Subnet Bits (3)</span>
+                            <span class="legend-item"><span class="bit host">0</span> Host Bits (5)</span>
+                        </div>
+                    </div>
+                    
+                    <table class="binary-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Binary Representation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>New Subnet Mask</td>
+                                <td>11111111.11111111.11111111.11100000</td>
+                            </tr>
+                            <tr>
+                                <td>Network Bits</td>
+                                <td>←──────── 27 bits ────────→</td>
+                            </tr>
+                            <tr>
+                                <td>Host Bits</td>
+                                <td>←─ 5 bits ─→</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="important-note">
+                    <h4>Important Subnetting Guidelines:</h4>
+                    <ul>
+                        <li>Do not modify the original network bits (first 24 bits in this case)</li>
+                        <li>Only convert host bits to network bits for subnetting</li>
+                        <li>Each subnet will have 2^5 - 2 = 30 usable IP addresses</li>
+                    </ul>
+                </div>
+
+                <div class="tip-section">
+                    <h4>Tip:</h4>
+                    <p>Use the formula <code>2^H</code> to calculate incremental values. With 5 host bits remaining: 2^5 = 32, so each subnet will increment by 32.</p>
+                </div>
+            </section>
+
+            <!-- Step 3: Assigning Subnets to Each Network -->
+            <section id="step3" class="content-section">
+                <h2>Step 3: Assigning Subnets to Each Network</h2>
+
+                <h3>Subnet Calculation Guidelines</h3>
+                <div class="calculation-guidelines">
+                    <ul>
+                        <li><strong>Network ID:</strong> The subnet address itself</li>
+                        <li><strong>First Usable IP:</strong> Network ID + 1</li>
+                        <li><strong>Last Usable IP:</strong> Next Network ID - 2</li>
+                        <li><strong>Broadcast Address:</strong> Next Network ID - 1</li>
+                    </ul>
+                </div>
+
+                <h3>LAN Subnet Assignments</h3>
+                <p>The first four subnets are assigned to the LANs:</p>
+                
+                <div class="subnet-allocation-visual">
+                    <h5>Visual Subnet Allocation (192.168.0.0/24 divided into /27 subnets)</h5>
+                    <div class="subnet-blocks">
+                        <div class="subnet-block allocated">
+                            <div class="subnet-header">Subnet 0</div>
+                            <div class="subnet-range">192.168.0.0/27</div>
+                            <div class="subnet-usage">Main Office (28 hosts)</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill" style="width: 93%"></div>
+                            </div>
+                        </div>
+                        <div class="subnet-block allocated">
+                            <div class="subnet-header">Subnet 1</div>
+                            <div class="subnet-range">192.168.0.32/27</div>
+                            <div class="subnet-usage">Branch A (26 hosts)</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill" style="width: 87%"></div>
+                            </div>
+                        </div>
+                        <div class="subnet-block allocated">
+                            <div class="subnet-header">Subnet 2</div>
+                            <div class="subnet-range">192.168.0.64/27</div>
+                            <div class="subnet-usage">Branch B (25 hosts)</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill" style="width: 83%"></div>
+                            </div>
+                        </div>
+                        <div class="subnet-block allocated">
+                            <div class="subnet-header">Subnet 3</div>
+                            <div class="subnet-range">192.168.0.96/27</div>
+                            <div class="subnet-usage">Branch C (15 hosts)</div>
+                            <div class="usage-bar">
+                                <div class="usage-fill" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="subnet-block reserved">
+                            <div class="subnet-header">Subnet 4-6</div>
+                            <div class="subnet-range">192.168.0.128-192/27</div>
+                            <div class="subnet-usage">Reserved for future</div>
+                        </div>
+                        <div class="subnet-block available">
+                            <div class="subnet-header">Subnet 7</div>
+                            <div class="subnet-range">192.168.0.224/27</div>
+                            <div class="subnet-usage">Available for VLSM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Main Office LAN (Subnet 0)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.0/27</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.1</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.30</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.31</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Branch A LAN (Subnet 1)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.32/27</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.33</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.62</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.63</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Branch B LAN (Subnet 2)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.64/27</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.65</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.94</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.95</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Branch C LAN (Subnet 3)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.96/27</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.97</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.126</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.127</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>IP Address Wastage Issue</h3>
+                <div class="wastage-callout">
+                    <h4>Problem Identified:</h4>
+                    <p>Each /27 subnet provides <strong>30 usable IP addresses</strong>, but WAN links only need <strong>2 IP addresses</strong>. This results in <strong>28 wasted IP addresses per WAN link</strong>.</p>
+                    <p><strong>Solution:</strong> Use Variable Length Subnet Masking (VLSM) to create smaller subnets for WAN links.</p>
+                </div>
+
+                <h3>Unallocated Subnets</h3>
+                <p>The remaining subnets are available for WAN links and future use:</p>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Subnet</th>
+                            <th>Network ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>4</td>
+                            <td>192.168.0.128/27</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>192.168.0.160/27</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>192.168.0.192/27</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>192.168.0.224/27</td>
+                            <td>Available for VLSM</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Step 4: Performing VLSM -->
+            <section id="step4" class="content-section">
+                <h2>Step 4: Performing Variable-Length Subnet Masking (VLSM)</h2>
+
+                <h3>VLSM Process Overview</h3>
+                <p>We'll use the eighth subnet (<code>192.168.0.224/27</code>) to create smaller subnets specifically for WAN links, which only need 2 usable IP addresses each.</p>
+
+                <h3>Calculating Optimal Subnet Size for WANs</h3>
+                <div class="formula-section">
+                    <h4>Usable IP Calculation: 2^H - 2</h4>
+                    <ul>
+                        <li><strong>1 host bit:</strong> 2^1 - 2 = 0 usable IPs (insufficient)</li>
+                        <li><strong>2 host bits:</strong> 2^2 - 2 = 2 usable IPs ✓ (perfect for WAN links)</li>
+                    </ul>
+                </div>
+
+                <h3>Creating WAN Subnets</h3>
+                <p>Using 2 host bits, we can create multiple /30 subnets from the /27 subnet:</p>
+                <div class="formula-section">
+                    <h4>Number of Networks: 2^N = 2^3 = 8 new /30 subnets</h4>
+                </div>
+                
+                <div class="vlsm-visualization">
+                    <h5>VLSM Process: Subdividing 192.168.0.224/27 into /30 subnets</h5>
+                    <div class="vlsm-process">
+                        <div class="vlsm-source">
+                            <div class="vlsm-label">Original /27 Subnet</div>
+                            <div class="vlsm-block large">
+                                <span>192.168.0.224/27</span>
+                                <small>30 usable IPs</small>
+                            </div>
+                        </div>
+                        <div class="vlsm-arrow">↓ VLSM Process ↓</div>
+                        <div class="vlsm-result">
+                            <div class="vlsm-label">Eight /30 Subnets</div>
+                            <div class="vlsm-grid">
+                                <div class="vlsm-block small allocated">
+                                    <span>192.168.0.224/30</span>
+                                    <small>WAN 1</small>
+                                </div>
+                                <div class="vlsm-block small allocated">
+                                    <span>192.168.0.228/30</span>
+                                    <small>WAN 2</small>
+                                </div>
+                                <div class="vlsm-block small allocated">
+                                    <span>192.168.0.232/30</span>
+                                    <small>WAN 3</small>
+                                </div>
+                                <div class="vlsm-block small reserved">
+                                    <span>192.168.0.236/30</span>
+                                    <small>Reserved</small>
+                                </div>
+                                <div class="vlsm-block small reserved">
+                                    <span>192.168.0.240/30</span>
+                                    <small>Reserved</small>
+                                </div>
+                                <div class="vlsm-block small reserved">
+                                    <span>192.168.0.244/30</span>
+                                    <small>Reserved</small>
+                                </div>
+                                <div class="vlsm-block small reserved">
+                                    <span>192.168.0.248/30</span>
+                                    <small>Reserved</small>
+                                </div>
+                                <div class="vlsm-block small reserved">
+                                    <span>192.168.0.252/30</span>
+                                    <small>Reserved</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>New Subnet Mask for WAN Links</h3>
+                <table class="binary-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>New Subnet Mask (Decimal)</td>
+                            <td>255.255.255.252</td>
+                        </tr>
+                        <tr>
+                            <td>New Subnet Mask (Binary)</td>
+                            <td>11111111.11111111.11111111.11111100</td>
+                        </tr>
+                        <tr>
+                            <td>CIDR Notation</td>
+                            <td>/30</td>
+                        </tr>
+                        <tr>
+                            <td>Network Bits</td>
+                            <td>30 bits</td>
+                        </tr>
+                        <tr>
+                            <td>Host Bits</td>
+                            <td>2 bits</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="important-note">
+                    <h4>VLSM Guidelines:</h4>
+                    <ul>
+                        <li>Always work with unallocated address space</li>
+                        <li>Start with the smallest required subnet size</li>
+                        <li>Ensure proper alignment with subnet boundaries</li>
+                        <li>Document all allocations to avoid overlap</li>
+                    </ul>
+                </div>
+
+                <h3>WAN Link Allocations</h3>
+
+                <h4>WAN Link 1: Main Office ↔ Branch A</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.224/30</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.225</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.226</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.227</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>WAN Link 2: Main Office ↔ Branch B</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.228/30</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.229</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.230</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.231</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>WAN Link 3: Main Office ↔ Branch C</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Network ID</td>
+                            <td>192.168.0.232/30</td>
+                        </tr>
+                        <tr>
+                            <td>First Usable IP</td>
+                            <td>192.168.0.233</td>
+                        </tr>
+                        <tr>
+                            <td>Last Usable IP</td>
+                            <td>192.168.0.234</td>
+                        </tr>
+                        <tr>
+                            <td>Broadcast Address</td>
+                            <td>192.168.0.235</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Reserved WAN Subnets</h3>
+                <p>Additional /30 subnets available for future WAN expansion:</p>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Subnet</th>
+                            <th>Network ID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>WAN 4</td>
+                            <td>192.168.0.236/30</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>WAN 5</td>
+                            <td>192.168.0.240/30</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>WAN 6</td>
+                            <td>192.168.0.244/30</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>WAN 7</td>
+                            <td>192.168.0.248/30</td>
+                            <td>Reserved</td>
+                        </tr>
+                        <tr>
+                            <td>WAN 8</td>
+                            <td>192.168.0.252/30</td>
+                            <td>Reserved</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Final Allocation Summary</h3>
+                
+                <h4>LAN Allocations (/27 subnets)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Network ID</th>
+                            <th>Usable IPs</th>
+                            <th>Subnet Mask</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Main Office LAN</td>
+                            <td>192.168.0.0/27</td>
+                            <td>192.168.0.1 - 192.168.0.30</td>
+                            <td>255.255.255.224</td>
+                        </tr>
+                        <tr>
+                            <td>Branch A LAN</td>
+                            <td>192.168.0.32/27</td>
+                            <td>192.168.0.33 - 192.168.0.62</td>
+                            <td>255.255.255.224</td>
+                        </tr>
+                        <tr>
+                            <td>Branch B LAN</td>
+                            <td>192.168.0.64/27</td>
+                            <td>192.168.0.65 - 192.168.0.94</td>
+                            <td>255.255.255.224</td>
+                        </tr>
+                        <tr>
+                            <td>Branch C LAN</td>
+                            <td>192.168.0.96/27</td>
+                            <td>192.168.0.97 - 192.168.0.126</td>
+                            <td>255.255.255.224</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>WAN Allocations (/30 subnets)</h4>
+                <table class="subnet-table">
+                    <thead>
+                        <tr>
+                            <th>WAN Link</th>
+                            <th>Network ID</th>
+                            <th>Usable IPs</th>
+                            <th>Subnet Mask</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Main ↔ Branch A</td>
+                            <td>192.168.0.224/30</td>
+                            <td>192.168.0.225 - 192.168.0.226</td>
+                            <td>255.255.255.252</td>
+                        </tr>
+                        <tr>
+                            <td>Main ↔ Branch B</td>
+                            <td>192.168.0.228/30</td>
+                            <td>192.168.0.229 - 192.168.0.230</td>
+                            <td>255.255.255.252</td>
+                        </tr>
+                        <tr>
+                            <td>Main ↔ Branch C</td>
+                            <td>192.168.0.232/30</td>
+                            <td>192.168.0.233 - 192.168.0.234</td>
+                            <td>255.255.255.252</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="planning-note">
+                    <h4>Planning for Future Growth:</h4>
+                    <p>This addressing scheme provides:</p>
+                    <ul>
+                        <li>Efficient use of IP address space with minimal waste</li>
+                        <li>3 reserved /27 subnets for additional LANs</li>
+                        <li>5 reserved /30 subnets for additional WAN links</li>
+                        <li>Scalable design supporting organizational expansion</li>
+                    </ul>
+                    <p><strong>Key Success Factors:</strong> Proper planning, understanding of network requirements, and strategic use of VLSM to optimize address allocation.</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 IPv4 Subnetting and VLSM Guide</p>
+        </div>
+    </footer>
+
+</body>
+</html>
