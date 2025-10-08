@@ -2,12 +2,17 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/HashimThePassionate//ipv4-subnetting-guide" />
+  <img src="https://img.shields.io/github/license/HashimThePassionate/ipv4-subnetting-guide" />
   <img src="https://img.shields.io/badge/HTML-5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML" />
   <img src="https://img.shields.io/badge/CSS-3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS" />
   <img src="https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript&logoColor=black" />
 </p>
 
+<p align="center">
+  <a href="https://hashimthepassionate.github.io/ipv4-subnetting-guide/">
+    <img src="https://img.shields.io/badge/🚀_Live_Preview-Click_Here-success?style=for-the-badge" alt="Live Preview" />
+  </a>
+</p>
 
 A comprehensive, interactive educational resource for mastering IPv4 subnetting and Variable Length Subnet Masking (VLSM). Perfect for networking students, IT professionals, and aspiring network engineers.
 
